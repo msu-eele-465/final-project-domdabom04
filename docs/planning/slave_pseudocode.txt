@@ -1,0 +1,28 @@
+initialize I2C slave
+initialize LCD, LED bar, piezo
+
+variables:
+    cook_time = 0
+    cook_power = 0
+    state = idle
+
+on I2C receive:
+    if data == PRESS_COMMAND:
+        state = RUNNING
+    else if data is power:
+        cook_power = parse_power(data)
+    else if data is time:
+        cook_time = parse_time(data)
+
+loop forever:
+    if state == RUNNING:
+        display_time_and_power_on_LCD()
+        light_up_LEDs(cook_power)
+        
+        while cook_time > 0:
+            delay 1 second
+            cook_time -= 1
+            update_LCD_time_remaining()
+
+        beep_with_piezo()
+        state = IDLE
