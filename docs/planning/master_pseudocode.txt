@@ -1,0 +1,21 @@
+initialize I2C master
+initialize keypad and touch sensor
+
+loop forever:
+    key = poll_keypad()
+    
+    if key == '*':
+        cook_power = get_numeric_input()
+        send_cook_power(cook_power)
+    
+    else if key == '#':
+        cook_time = get_numeric_input()  // e.g., 123 => 1 min 23 sec
+        send_cook_time(cook_time)
+    
+    else if key in ['A', 'B', 'C', 'D']:
+        preset = get_preset_values(key)
+        send_cook_power(preset.power)
+        send_cook_time(preset.time)
+
+    if touch_sensor_pressed():
+        send_press_command()
